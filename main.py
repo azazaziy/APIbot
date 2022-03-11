@@ -1,14 +1,15 @@
 from flask import request
 from flask import Flask
 from flask import jsonify
+
 import requests
 import json
+import asyncio
+
 # from flask_sslify import SSLify
 
 from sqliter import SQLighter
 from message_parser import message_checker
-from bot import write_json
-from bot import send_message
 # https://api.telegram.org/bot1139412331:AAHH5phrKI8YLOtKPYm9VcwIpZUL23PpWIg/setWebhook?url=https://98919559b2dd27.lhrtunnel.link
 
 
@@ -36,7 +37,7 @@ def index():
     if request.method == 'POST':
         r = request.get_json()
         try:
-            chat_id= r['message']['chat']['id']
+            chat_id = r['message']['chat']['id']
             text = r['message']['text']
         except:
             chat_id = r['edited_message']['chat']['id']
@@ -60,16 +61,19 @@ def send_global_message():
 def remove_user_from_db():
     if request.method == 'GET':
         user_id = request.args.get('user_id')
-        print(db.add_subscriber(user_id))
+        db.remove_subscriber(user_id)
     return '<h1>REMOVE USER</h1>'
 
 @app.route('/add_user', methods=['POST', 'GET'])
 def add_user_to_db():
     if request.method == 'GET':
         user_id = request.args.get('user_id')
-        print(db.add_subscriber(user_id))
+        db.add_subscriber(user_id, True)
     return '<h1>AD USER</h1>'
 
 if __name__ == "__main__":
+    WEBHOOK = str(input("Введите url хоста:\t"))
+    url = f'{URL}setWebhook?url={WEBHOOK}'
+    requests.get(url)
     app.run()
 

@@ -24,6 +24,10 @@ class SQLighter:
         with self.connection:
             return self.cursor.execute("INSERT INTO `subscriptions` (`user_id`, `status`) VALUES(?,?)", (user_id,status))
 
+    def remove_subscriber(self, user_id):
+        with self.connection:
+            return self.cursor.execute("DELETE FROM `subscriptions` WHERE `user_id` = ?", (user_id,))
+
 
     def update_subscription(self, user_id, status):
         with self.connection:
